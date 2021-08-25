@@ -56,7 +56,7 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        print(attacking);
+
 
 
         if(transform.position.x - targetPos.position.x == 0)
@@ -68,7 +68,7 @@ public class Movement : MonoBehaviour
         if (movingToPosition == true)
         {
             animator.SetFloat("Speed", 0.1f);
-            rb.position = Vector2.MoveTowards(rb.position, targetPos.position, 4 * Time.fixedDeltaTime);
+            rb.position = Vector2.MoveTowards(rb.position, new Vector2(targetPos.position.x, rb.position.y), 4 * Time.fixedDeltaTime);
         }
         else
         {
@@ -139,6 +139,5 @@ public class Movement : MonoBehaviour
     void attackAnimDone()
     {
         attacking = false;
-
     }
 }
