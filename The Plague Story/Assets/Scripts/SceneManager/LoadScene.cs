@@ -8,7 +8,6 @@ public class LoadScene : MonoBehaviour
     SceneController sceneController;
 
     public string levelToLoad;
-    public string moveToTarget;
 
     public string targetPosition;
     public string startPosition;
@@ -24,7 +23,7 @@ public class LoadScene : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player")
+        if(collision.tag == "Player" && player.GetComponent<Movement>().movingToPosition == false)
         {
             Movement.targetposistion = targetPosition;
             Movement.startPosition = startPosition;

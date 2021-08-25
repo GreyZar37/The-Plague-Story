@@ -16,6 +16,10 @@ public class Movement : MonoBehaviour
     public bool movingToNextLocation;
     public bool movingToPosition = true;
 
+    bool attacking;
+    float attackCooldown = 1.25f;
+    float currentAttackTimer;
+
     public LayerMask ground;
 
     Animator animator;
@@ -30,6 +34,16 @@ public class Movement : MonoBehaviour
     void Start()
     {
 
+        currentAttackTimer = attackCooldown;
+        if(targetposistion == "leftTarget")
+        {
+            transform.eulerAngles = new Vector3(0, 0, 0);
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0, 180, 0);
+        }
+        
         targetPos = GameObject.Find(targetposistion).transform;
         startPos = GameObject.Find(startPosition).transform;
 
@@ -42,21 +56,23 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        print(movingToPosition);
-        print(Mathf.Abs(transform.position.x - targetPos.position.x));
+        print(attacking);
 
-        if(transform.position.x - targetPos.position.x >= 0)
+
+        if(transform.position.x - targetPos.position.x == 0)
         {
             movingToPosition = false;
+            animator.SetFloat("Speed", 0);
         }
-        
-        if(movingToPosition == true)
+
+        if (movingToPosition == true)
         {
+            animator.SetFloat("Speed", 0.1f);
             rb.position = Vector2.MoveTowards(rb.position, targetPos.position, 4 * Time.fixedDeltaTime);
         }
         else
         {
-            horizontal = Input.GetAxis("Horizontal");
+           
 
             if (movingToNextLocation == true)
             {
@@ -69,16 +85,36 @@ public class Movement : MonoBehaviour
                     rb.velocity = Vector2.right * -4;
                 }
             }
-            else
+            else if(movingToNextLocation == false)
             {
+                if(attacking == true)
+                {
+                    rb.constraints = RigidbodyConstraints2D.FreezePositionX;
+                }
+                else
+                {
+                    rb.constraints = RigidbodyConstraints2D.None;
+                    rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+                }
+                horizontal = Input.GetAxis("Horizontal");
                 rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
                 animator.SetFloat("Speed", Mathf.Abs(horizontal));
+            
             }
         }
            
     }
     private void Update()
     {
+        currentAttackTimer -= Time.deltaTime;
+
+        if (Input.GetMouseButtonDown(0) && currentAttackTimer <= 0)
+        {
+            currentAttackTimer = attackCooldown;
+            attacking = true;
+        }
+        animator.SetBool("Attacking", attacking);
+
         flip();
         isGrounded = Physics2D.OverlapCircle(feetPosistion.position, checkRadius, ground);
         if(isGrounded == true && Input.GetKeyDown(KeyCode.Space))
@@ -99,5 +135,10 @@ public class Movement : MonoBehaviour
             transform.eulerAngles = new Vector3(0, 180, 0);
 
         }
+    }
+    void attackAnimDone()
+    {
+        attacking = false;
+
     }
 }
