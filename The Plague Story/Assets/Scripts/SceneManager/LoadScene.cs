@@ -23,11 +23,11 @@ public class LoadScene : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player" && player.GetComponent<Movement>().movingToPosition == false)
+        if(collision.tag == "Player" && player.GetComponent<PlayerController>().movingToPosition == false)
         {
-            Movement.targetposistion = targetPosition;
-            Movement.startPosition = startPosition;
-            player.GetComponent<Movement>().movingToNextLocation = true;
+            PlayerController.targetposistion = targetPosition;
+            PlayerController.startPosition = startPosition;
+            player.GetComponent<PlayerController>().movingToNextLocation = true;
             sceneController.FadeToLevel(levelToLoad);
         }
     }
