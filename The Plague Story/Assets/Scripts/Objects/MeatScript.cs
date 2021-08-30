@@ -8,22 +8,29 @@ public class MeatScript : MonoBehaviour
     bool playerNearBy;
     Animator animtor;
 
+    public GameObject wall;
+
     // Start is called before the first frame update
     void Start()
     {
         animtor = gameObject.GetComponent<Animator>();
-        //if()
-        animtor.SetTrigger("Eaten");
+        if(DataSaver.eatenMeatPile == true)
+        {
+            animtor.SetTrigger("Eaten");
+        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        print(playerNearBy);
+
+     
         if(playerNearBy == true && Input.GetMouseButtonDown(0))
         {
             animtor.SetTrigger("Eaten");
-            DataSaver.eatenMeatPile = true;        
+            DataSaver.eatenMeatPile = true;
+            Destroy(wall);
         }
     }
 

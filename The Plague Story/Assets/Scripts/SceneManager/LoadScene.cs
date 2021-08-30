@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class LoadScene : MonoBehaviour
 
     public string targetPosition;
     public string startPosition;
+
 
     GameObject player;
 
@@ -23,13 +25,18 @@ public class LoadScene : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player" && player.GetComponent<PlayerController>().movingToPosition == false)
+       
+            if (collision.tag == "Player" && player.GetComponent<PlayerController>().movingToPosition == false)
         {
+            DataSaver.houseEnter = false;
             PlayerController.targetposistion = targetPosition;
             PlayerController.startPosition = startPosition;
             player.GetComponent<PlayerController>().movingToNextLocation = true;
             sceneController.FadeToLevel(levelToLoad);
+           
         }
+  
+ 
     }
 
 }

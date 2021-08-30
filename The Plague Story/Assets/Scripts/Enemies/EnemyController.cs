@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyController : MonoBehaviour
 {
@@ -11,29 +12,29 @@ public class EnemyController : MonoBehaviour
     public float distance;
 
     Transform playerTarget;
+    GameObject Player;
+
     public Transform[] targetPositions;
     public Transform lookTransform;
     int chooseTarget;
     bool chasing;
-    bool working;
+    public bool working;
     float distanceFromPatrolTarget;
     float distanceFromPlayerTarget;
 
-    float lastXposistion;
+    public float lastXposistion;
 
     public float walkSpeed = 2f;
     public float runSpeed = 5f;
-
-    GameObject deathScreen;
 
     void Start()
     {
         animator = gameObject.GetComponent<Animator>();
         lastXposistion = gameObject.transform.position.x;
         chooseTarget = Random.Range(0, targetPositions.Length);
-        playerTarget = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        Player = GameObject.FindGameObjectWithTag("Player");
         Physics2D.queriesStartInColliders = false;
-        deathScreen = GameObject.FindGameObjectWithTag("DeathScreen");
+          playerTarget = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
     }
 
     private void FixedUpdate()
@@ -46,28 +47,40 @@ public class EnemyController : MonoBehaviour
         if (working == false)
         {
 
-            RaycastHit2D hitInfo = Physics2D.Raycast(new Vector2(lookTransform.position.x, playerTarget.position.y), transform.right, distance);
-            if (hitInfo.collider != null)
-            {
-                if (hitInfo.collider.tag == "Player")
+        if (Player.GetComponent<PlayerController>().hidden == false || chasing == true)
+          {
+                RaycastHit2D hitInfo = Physics2D.Raycast(new Vector2(lookTransform.position.x, playerTarget.position.y), transform.right, distance);
+                if (hitInfo.collider != null)
                 {
-                    distanceFromPlayerTarget = Mathf.Abs(transform.position.x - playerTarget.position.x);
-                    transform.position = Vector2.MoveTowards(transform.position, new Vector2(playerTarget.position.x, transform.position.y), runSpeed * Time.deltaTime);
-                    chasing = true;
-                    if (distanceFromPlayerTarget <= 1f)
-                    {
-                        deathScreen.transform.GetChild(0).transform.gameObject.SetActive(true);
-                    }
-                    Debug.DrawLine(lookTransform.position, hitInfo.point, Color.red);
-                }
-                else
-                {
-                    Debug.DrawLine(lookTransform.position, lookTransform.position + transform.right * distance, Color.green);
-                    saveLastPosistion();
-                    chasing = false;
 
+                    if (hitInfo.collider.tag == "Player")
+                    {
+                        distance = 8;
+                        distanceFromPlayerTarget = Mathf.Abs(transform.position.x - playerTarget.position.x);
+                        transform.position = Vector2.MoveTowards(transform.position, new Vector2(playerTarget.position.x, transform.position.y), runSpeed * Time.deltaTime);
+                        chasing = true;
+                        if (distanceFromPlayerTarget <= 1f)
+                        {
+                            SceneManager.LoadScene("Death");
+                        }
+                        Debug.DrawLine(lookTransform.position, hitInfo.point, Color.red);
+                    }
+                    else
+                    {
+                        Debug.DrawLine(lookTransform.position, lookTransform.position + transform.right * distance, Color.green);
+                        saveLastPosistion();
+                        distance = 3;
+                        if (chasing == true)
+                        {
+                            giveNewTarget();
+                        }
+                        chasing = false;
+
+                    }
                 }
-            }
+ 
+               
+             }
             else
             {
                 saveLastPosistion();

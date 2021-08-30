@@ -11,4 +11,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Road.unity
     guid: 831d21f3fcd22d5479438a5415a67a1f
+  - enabled: 1
+    path: Assets/Scenes/Village.unity
+    guid: 0f6839fac9cb0104f9b77f2e4e39b67b
+  - enabled: 1
+    path: Assets/Scenes/LivingRoom.unity
+    guid: 19456b866a09b1445affd0ee8ca071a2
+  - enabled: 1
+    path: Assets/Scenes/Kitchen.unity
+    guid: 8c14cabbc631056428e93dbbf2aa0580
+  - enabled: 1
+    path: Assets/Scenes/Death.unity
+    guid: 6c956a7fde7a4cb4aa7effd882f75205
   m_configObjects: {}
